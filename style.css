@@ -2,8 +2,6 @@ body {
   margin: 0;
 }
 
-
-
 .calculator {
   width: 450px;
   height: 600px;
@@ -100,13 +98,13 @@ body {
       } */
 
       .input-container > * {
-      background-color: #fff;
-  padding: 0.5em 1.25em;
-  position: relative;
-  text-align: center;
-  height: 50px;
-  border-radius: 5px;
-  font-size: 20px;
+        background-color: #fff;
+        padding: 0.5em 1.25em;
+        position: relative;
+        text-align: center;
+        height: 50px;
+        border-radius: 5px;
+        font-size: 20px;
       }
 
        /* .input-container > * {
