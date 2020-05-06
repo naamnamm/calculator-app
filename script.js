@@ -1,154 +1,156 @@
 const log = console.log;
-let isNumberComplete = false;
-let mathOperator = '';
-let output = '';
-let calculator = document.querySelector('.calculator');
-let displayCalculation = [];
+const display = document.querySelector('.display-screen');
 
-let displayNum = document.getElementsByClassName('display-output')[0];
+const calculator = {
+  displayValue: '0',
+  firstOperand: null,
+  isFirstNumComplete: false,
+  mathOperator: null,
+};
+
+//---------------------------------------------------------------------------------
 
 const numberBtns = document.querySelectorAll('.number');
 numberBtns.forEach(button => button.addEventListener('click', getNumber));
 
 function getNumber(e) {
-  //debugger;
+  //starting
+  if (calculator.isFirstNumComplete === false) {
 
-  //start new Number
-  if (isNumberComplete === false) {
-
-    //textContent is either 0
-    if (displayNum.textContent === '0') {
-      displayNum.textContent = e.target.value; 
+    if (calculator.displayValue === '0') {
+      calculator.displayValue = e.target.value;
     } else {
-      displayNum.textContent += e.target.value;
-    };
+      calculator.displayValue += e.target.value;
+    }
     
-    //Or 0.
-    if (displayNum.textContent === '0.') {
-      displayNum.textContent += e.target.value;
-    };
   }
 
-  //restart
-  if (isNumberComplete === true) {
-    //display second number
-    displayNum.textContent = e.target.value;
-  } 
+  if (calculator.isFirstNumComplete === true) {
+    //save first number from the display to an object
+    calculator.firstOperand = display.textContent
+    
+    //replace display with new num 
+    display.textContent = e.target.value;
+    //update display value - calculator object 
+    calculator.displayValue = display.textContent;
+    
+  }
 
-  isNumberComplete = false;
+  calculator.isFirstNumComplete = false;
+
+  updateDisplay()
+
+  log(calculator);
 }
 
+//---------------------------------------------------------------------------------
+
+function updateDisplay() {
+  //const display = document.querySelector('.calculator-screen');
+  //update text con
+  display.textContent = calculator.displayValue;
+
+}
+
+const clearBtn = document.getElementById('clear');
+clearBtn.addEventListener('click', e => display.textContent = '0');
+
+//---------------------------------------------------------------------------------
 
 const operatorBtns = document.querySelectorAll('.operator-key');
 operatorBtns.forEach(button => button.addEventListener('click', getMathOperator))
 
 function getMathOperator(e) {
+  // this make first number complete
+  calculator.isFirstNumComplete = true;
+
+  //update operator to an object
+  calculator.mathOperator = e.target.value;
   
-  isNumberComplete = true;
-
-  mathOperator = e.target.value;
-
-  //save first number to dataset
-  calculator.dataset.n1 = displayNum.textContent;
-  //push first number 
-  displayCalculation.push(calculator.dataset.n1);
-  //push operand to array
-  displayCalculation.push(mathOperator);
-
-  log(mathOperator);
-  log(displayCalculation);
-  log(displayCalculation.length);
-
-  if (displayCalculation.length === 4) {
-    // log(calculator.dataset.n1);
-    // log(calculateOutput());
-    calculator.dataset.n1 = calculateOutput();
-    log(calculator.dataset.n1);
-  }
-
+  log(calculator);
+  // for continuing number - if hit math operator again - calculate total
+  calculate();
+  log(calculator);
 }
 
+
+
+//---------------------------------------------------------------------------------
+
+const calculationKey = document.getElementById('calculation-key')
+calculationKey.addEventListener('click', calculate)
+
+function calculate() {
+  let firstNum = Number(calculator.firstOperand);
+  let secondNum = Number(display.textContent);
+  let mathOperator = calculator.mathOperator;
+  let result = '';
+
+    switch(mathOperator) {
+    case '+' :
+      result = firstNum += secondNum
+      break;
+
+    case '-' :
+      result = firstNum -= secondNum
+      break;
+
+    case '*' :
+      result = firstNum *= secondNum
+      break;
+
+    case '/' :
+      result = firstNum /= secondNum
+      break;      
+    }
+
+    calculator.displayValue = result;
+    calculator.firstOperand = '';
+    calculator.isFirstNumComplete = true;
+
+    updateDisplay();
+
+    
+
+    log(calculator);
+}
+
+
+//---------------------------------------------------------------------------------
 
 
 const decimalBtn = document.getElementById('decimal-key');
 decimalBtn.addEventListener('click', makeDecimalPoint)
 
 function makeDecimalPoint(e) {
-   
-    if (isNumberComplete === false) {
-      //fresh start with first Number - start with either 0 or Number
-      if (displayNum.textContent.indexOf(e.target.value) >= 0) {
+   //debugger;
+    if (calculator.isFirstNumComplete === false) {
+      //continuing number
+      if (calculator.displayValue.indexOf(e.target.value) >= 0) {
         return;
       }
 
-      if (displayNum.textContent === '0') {
-        displayNum.textContent = '0' + e.target.value;
+      //fresh start with first Number - start with either 0 or Number
+      if (calculator.displayValue === '0') {
+        calculator.displayValue = '0' + e.target.value;
       } else {
-        displayNum.textContent += e.target.value;
+        calculator.displayValue += e.target.value;
       }
     }
     
     //after hit operand > get second Number
-    if (isNumberComplete === true) {
-      displayNum.textContent = '0' + e.target.value;
+    if (calculator.isFirstNumComplete === true) {
+      //save first number from the display to an object
+      calculator.firstOperand = display.textContent
+
+      //replace display with new num 
+      calculator.displayValue = '0' + e.target.value;
     }
 
-    isNumberComplete = false;
+    calculator.isFirstNumComplete = false;
+
+    updateDisplay();
 }
-
-
-const clearBtn = document.getElementById('clear');
-clearBtn.addEventListener('click', e => {
-  let displayNum = document.getElementsByClassName('display-output')[0];
-  displayNum.textContent = 0;
-  }); 
-
-
-const calculationKey = document.getElementById('calculation-key')
-calculationKey.addEventListener('click', grabAllInputs)
-
-function grabAllInputs() {
-  let n1 = Number(calculator.dataset.n1);
-  log(calculator.dataset.n1);
-
-  let n2 = Number(displayNum.textContent);
-  displayCalculation.push(n2);
-
-  log(displayCalculation);
-  log(displayCalculation.length);
-
-  log(n1, n2);
-  debugger;
-  calculate(n1, n2);
-    
-}
-
-function calculate(n1, n2, mathOperator) {
-  let output = ''
-
-  switch(mathOperator) {
-    case '+' :
-      output = n1 += n2
-      displayNum.textContent = output;
-      break;
-
-    case '-' :
-      output = n1 -= n2
-      displayNum.textContent = output;
-      break;
-
-    case '*' :
-      output = n1 *= n2
-      displayNum.textContent = output;
-      break;
-
-    case '/' :
-      output = n1 /= n2
-      displayNum.textContent = output;
-      break;      
-    }
-}
-
 
 
 
