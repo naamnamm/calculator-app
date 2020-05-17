@@ -8,7 +8,10 @@ const calculator = {
   isNumberComplete: false,
   mathOperator: null,
   previousKey: null,
+  storedValue: null
 };
+
+
 
 //---------------------------------------------------------------------------------
 
@@ -31,6 +34,7 @@ function getNumber(e) {
 
   if (calculator.isNumberComplete === true) {
     //save first number from the display to an object
+    //debugger;
     calculator.firstOperand = display.textContent
 
     //replace display with new num 
@@ -39,12 +43,12 @@ function getNumber(e) {
     calculator.displayValue = display.textContent;
 
   }
-
   calculator.isNumberComplete = false;
-  calculator.previousKey = null;
+  calculator.previousKey = 'number';
 
   log(calculator);
   updateDisplayScreen();
+
 }
 //-------------------------------------------------------
 
@@ -53,20 +57,25 @@ function updateDisplayScreen() {
 
 }
 
+
 //---------------------------------------------------------------------------------
 
 const operatorBtns = document.querySelectorAll('.operator-key');
 operatorBtns.forEach(button => button.addEventListener('click', getMathOperator))
 
 function getMathOperator(e) {
-  // this make number complete
+  // this makes number complete
   calculator.isNumberComplete = true;
 
   if (calculator.firstOperand && calculator.mathOperator && calculator.displayValue) {
-    calculate();
+    calculator.storedValue = calculator.displayValue;
+    let result = performOperation(Number(calculator.firstOperand), Number(calculator.displayValue), calculator.mathOperator);
+    calculator.displayValue = result;
+    updateDisplayScreen()
     calculator.mathOperator = e.target.value;
   } else {
     calculator.mathOperator = e.target.value;
+
   }
 
   displayCalculation()
@@ -80,72 +89,100 @@ function getMathOperator(e) {
 let displayMath = document.querySelector('.display-calculation')
 
 function displayCalculation() {
-  //debugger;
+
+  if (calculator.previousKey === 'calculation-key') {
+    calculation.push(calculator.storedValue);
+    calculation.push('=');
+
+    //set previous key to null
+    calculator.previousKey = '';
+    let display = calculation.join(' ');
+    displayMath.textContent = display;
+    log(calculation)
+    // clear calculation array
+    calculation = [];
+    return;
+  }
 
   //this is to prevent pushing mathOperator to an array twice
   if (calculator.previousKey === 'mathOperator') {
     calculation.pop()
     calculation.push(calculator.mathOperator)
     log(calculation);
-
     let display = calculation.join(' ');
     displayMath.textContent = display;
     return;
   }
 
-  if (calculator.isNumberComplete === true && calculator.mathOperator) {
-    calculation.push(calculator.displayValue, calculator.mathOperator)
+  if (calculator.storedValue) {
+    calculation.push(calculator.storedValue, calculator.mathOperator);
+    let display = calculation.join(' ');
+    displayMath.textContent = display;
+    log(calculation);
+    return;
   }
 
-  let display = calculation.join(' ');
-  displayMath.textContent = display;
-  log(calculation);
+  if (calculator.isNumberComplete === true && calculator.mathOperator) {
+    calculation.push(calculator.displayValue, calculator.mathOperator);
+    let display = calculation.join(' ');
+    displayMath.textContent = display;
+    log(calculation);
+  }
+
+  calculationKey.storedValue = null;
+
 }
+
+// if (calculator.previousKey === 'clear-all') {
+//   calculation = [];
+// }
+//if num complete = true
+//push display to be first number
+
 
 //------------------------------------------------------------------
 
 const calculationKey = document.getElementById('calculation-key')
 calculationKey.addEventListener('click', calculate);
 
-
 function calculate(e) {
   //debugger;
-  // case 1 - this is '=' operator
   let firstNum = Number(calculator.firstOperand);
-  let secondNum = Number(display.textContent);
+  let secondNum = Number(calculator.displayValue);
   let mathOperator = calculator.mathOperator;
-  let result = '';
+  let result = performOperation(firstNum, secondNum, mathOperator)
 
   if (!(calculator.firstOperand && calculator.mathOperator)) {
     return;
   }
-  //debugger;
 
-  switch (mathOperator) {
-    case '+':
-      result = firstNum += secondNum
-      break;
 
-    case '-':
-      result = firstNum -= secondNum
-      break;
-
-    case '*':
-      result = firstNum *= secondNum
-      break;
-
-    case '/':
-      result = firstNum /= secondNum
-      break;
-  }
-
+  calculator.storedValue = calculator.displayValue;
   calculator.displayValue = result.toString();
   calculator.firstOperand = '';
   calculator.mathOperator = '';
+  calculator.previousKey = 'calculation-key';
 
   updateDisplayScreen();
-
+  displayCalculation();
   log(calculator);
+}
+
+function performOperation(firstNum, secondNum, mathOperator) {
+
+  switch (mathOperator) {
+    case '+':
+      return firstNum += secondNum
+
+    case '-':
+      return firstNum -= secondNum
+
+    case '*':
+      return firstNum *= secondNum
+
+    case '/':
+      return firstNum /= secondNum
+  }
 }
 
 //-------------------------------------------------------------
@@ -153,6 +190,10 @@ const delBtn = document.getElementById('delete');
 
 delBtn.addEventListener('click', e => {
   calculator.displayValue = calculator.displayValue.slice(0, -1)
+
+  if (calculator.isNumberComplete === true) {
+    return;
+  }
 
   //if str.length = 0 - update display to be 0
   if (calculator.displayValue.length === 0) {
