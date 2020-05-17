@@ -7,7 +7,7 @@ const calculator = {
   firstOperand: null,
   isNumberComplete: false,
   mathOperator: null,
-  previousKey: null,
+  previousKey: null, //maybe need to change this to action
   storedValue: null
 };
 
@@ -47,14 +47,13 @@ function getNumber(e) {
   calculator.previousKey = 'number';
 
   log(calculator);
-  updateDisplayScreen();
+  updateDisplayScreen(calculator.displayValue);
 
 }
 //-------------------------------------------------------
 
-function updateDisplayScreen() {
-  display.textContent = calculator.displayValue;
-
+function updateDisplayScreen(displayValue) {
+  display.textContent = displayValue;
 }
 
 
@@ -71,7 +70,7 @@ function getMathOperator(e) {
     calculator.storedValue = calculator.displayValue;
     let result = performOperation(Number(calculator.firstOperand), Number(calculator.displayValue), calculator.mathOperator);
     calculator.displayValue = result;
-    updateDisplayScreen()
+    updateDisplayScreen(calculator.displayValue)
     calculator.mathOperator = e.target.value;
   } else {
     calculator.mathOperator = e.target.value;
@@ -156,14 +155,13 @@ function calculate(e) {
     return;
   }
 
-
   calculator.storedValue = calculator.displayValue;
   calculator.displayValue = result.toString();
   calculator.firstOperand = '';
   calculator.mathOperator = '';
   calculator.previousKey = 'calculation-key';
 
-  updateDisplayScreen();
+  updateDisplayScreen(calculator.displayValue);
   displayCalculation();
   log(calculator);
 }
@@ -201,7 +199,7 @@ delBtn.addEventListener('click', e => {
   }
 
   log(calculator);
-  updateDisplayScreen();
+  updateDisplayScreen(calculator.displayValue);
 
 });
 
@@ -210,7 +208,7 @@ delBtn.addEventListener('click', e => {
 const clearBtn = document.getElementById('clear');
 clearBtn.addEventListener('click', e => {
   calculator.displayValue = '0';
-  updateDisplayScreen();
+  updateDisplayScreen(calculator.displayValue);
 });
 
 //--------------------------------------------------------
@@ -224,7 +222,7 @@ clearAllBtn.addEventListener("click", (e) => {
   calculator.isNumberComplete = false;
   calculator.previousKey = "clear-all";
 
-  updateDisplayScreen();
+  updateDisplayScreen(calculator.displayValue);
 
   calculation = [];
   displayCalculation();
@@ -260,5 +258,5 @@ function makeDecimalPoint(e) {
 
   calculator.isNumberComplete = false;
 
-  updateDisplayScreen();
+  updateDisplayScreen(calculator.displayValue);
 }
