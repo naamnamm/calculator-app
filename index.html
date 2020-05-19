@@ -4,28 +4,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Calculator</title>
   <link href="style.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
   <main>
-    <div class='calculator' data-firstNum=''>
+    <div class='calculator'>
       <section class='screen'>
         <div class='display-calculation'></div>
         <div class='display-screen'>0</div>
       </section>
 
-      <section class='memory-function-container'>
-        <div class='memory-recall'>MR</div>
-        <div class='memory-save'>M+</div>
-        <div class='memory-clear'>M-</div>
-      </section>
-
       <section id='input' class='input'>
         <div class='input-container'>
-          <button id='clear' class='clear'>CE</button>
-          <button id='clear-all' class='clear-all'>C</button>
+          <button id='CE' class='clear'>CE</button>
+          <button id='C' class='clear-all'>C</button>
           <button id='delete' class='delete'>Del</button>
           <button id='divide' class='operator-key' value='/'>/</button>
 
@@ -44,7 +38,7 @@
           <button id='3' class='number' value='3'>3</button>
           <button id='plus' class='operator-key' value='+'>+</button>
 
-          <button id='plus-minus' class='button'>+/-</button>
+          <button id='plus-minus' class='plus-minus'>+/-</button>
           <button id='0' class='number' value='0'>0</button>
           <button id='decimal-key' class='decimal-key' value='.'>.</button>
           <button id='calculation-key' class='calculation-key'>=</button>
