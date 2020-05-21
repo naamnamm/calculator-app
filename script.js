@@ -20,14 +20,14 @@ operatorBtns.forEach(button => button.addEventListener('click', getMathOperator)
 const decimalBtn = document.getElementById('decimal-key');
 decimalBtn.addEventListener('click', makeDecimalPoint)
 
-const plusMinusKeyEl = document.getElementById('plus-minus');
-plusMinusKeyEl.addEventListener('click', plusMinusNumber);
+const plusMinusBtn = document.getElementById('plus-minus');
+plusMinusBtn.addEventListener('click', plusMinusNumber);
 
-const calculationKey = document.getElementById('calculation-key')
-calculationKey.addEventListener('click', calculate);
+const calculateBtn = document.getElementById('calculation-key')
+calculateBtn.addEventListener('click', calculate);
 
-const delBtn = document.getElementById('delete');
-delBtn.addEventListener('click', e => {
+const deleteBtn = document.getElementById('delete');
+deleteBtn.addEventListener('click', e => {
   calculator.displayValue = calculator.displayValue.slice(0, -1)
 
   if (calculator.isNumberComplete === true) {
@@ -173,7 +173,7 @@ function displayCalculation(calculatorState) {
 
   displayMath.textContent = calculation.join(' ');
 
-  calculationKey.storedValue = null;
+  calculation.storedValue = null;
 }
 
 
